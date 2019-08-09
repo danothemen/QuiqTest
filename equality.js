@@ -9,6 +9,9 @@ module.exports = {
             if(obj1 == obj2){
                 toReturn.score++;
             }
+            else{
+                console.log("Same Type But Not Equal");
+            }
             return toReturn;
         }
 
@@ -21,17 +24,11 @@ module.exports = {
             if(keys1.includes(key) && keys2.includes(key)){
                 //add point for key matching
                 score.score++;
-                //add score for type matching
-                if(typeof(obj1[key]) == typeof(obj2[key])){
-                    //we will differentiate between "objects" and arrays here
-                    if(typeof(obj1[key]) == 'object'){
-                        if(Array.isArray(obj1[key]) == Array.isArray(obj2[key])){
-                            score.score++;
-                        }
-                    }
-                    else{
-                        score.score++;
-                    }
+                score.possibleScore++;
+                //add score for type matching; we will differentiate between "objects" and arrays here
+                if(typeof(obj1[key]) == typeof(obj2[key]) && Array.isArray(obj1[key]) == Array.isArray(obj2[key])){
+                    score.score++;
+                    score.possibleScore++;
                     //if array or object calculate similarity 
                     if(typeof(obj1[key]) == 'object' && (Array.isArray(obj1[key]) || Array.isArray(obj2[key]))){
                         //Compare arrays
@@ -64,14 +61,25 @@ module.exports = {
                         //if the type is an object recursively run this function to account for possible similarities in nested objects
                         let simScore = this.Similarity(obj1[key],obj2[key]);
                         score.score += simScore.score;
-                        score.possibleScore += simScore.score;
+                        score.possibleScore += simScore.possibleScore;
                     }
                     else if(obj1[key] == obj2[key]){
                         score.score++;
+                        score.possibleScore++;
+                    }
+                    else{
+                        score.possibleScore++;
                     }
                 }
+                else{
+                    //increment possible score, types don't match
+                    score.possibleScore++;
+                }
             }
-            score.possibleScore+=3;
+            else{
+                //increment possible score, one of the objects contains a key the other does not.
+                score.possibleScore++;
+            }
             return score;
         },{score:0,possibleScore:0});
     },
@@ -135,6 +143,7 @@ module.exports = {
         }
         let calculated = this.Similarity(obj1,obj2);
         console.log(calculated);
+        return calculated.score/calculated.possibleScore;
         
     }
 }
