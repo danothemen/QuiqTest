@@ -61,6 +61,7 @@ module.exports = {
                                 return this.Similarity(obj1[key][index],obj2[key][index]);
                             })
                             .reduce((arrScores,scoreObj)=>{
+                                //add up all the scores that result from comparing the objects
                                 arrScores.score += scoreObj.score;
                                 arrScores.possibleScore += scoreObj.possibleScore;
                                 return arrScores;
