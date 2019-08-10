@@ -1,4 +1,5 @@
 function log(toLog){
+    //only log if the verbose environment variable is set
     if(process.env.VERBOSE == 1){
         console.log(toLog);
     }
@@ -140,7 +141,7 @@ module.exports = {
         //similarity score
         let score = 1.0;
 
-        //if objects are equal return 1
+        //if objects are equal return 1, deep equal is no longer necessary but I've left it here anyway in accordance with the advice that equality be determined first.
         if(this.DeepEqual(obj1,obj2)){
             log("Objects Are Equal");
             return score;
